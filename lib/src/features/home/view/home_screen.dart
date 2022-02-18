@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key, required this.title}) : super(key: key);
+import '../viewmodel/home_view_model.dart';
+
+class HomeScreen extends StatelessWidget {
+  HomeScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final _viewModel = HomeViewModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Center(
         child: Column(
@@ -31,18 +22,24 @@ class _HomeScreenState extends State<HomeScreen> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            buildObserverCounter(context),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _viewModel.incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Observer buildObserverCounter(BuildContext context) {
+    return Observer(builder: (_) {
+      return Text(
+        '${_viewModel.counter}',
+        style: Theme.of(context).textTheme.headline4,
+      );
+    });
   }
 }
